@@ -8,7 +8,7 @@ const path = require('path');
 
 
 const stuffRoutes = require('./routes/stuff');
-const userRoutes = require('./models/User.js');
+const userRoutes = require('./routes/user');
 
 
 mongoose.connect('mongodb+srv://projet_livre:LivreProjet02445@cluster0.vmaby4x.mongodb.net/?appName=Cluster0')
@@ -19,6 +19,7 @@ mongoose.connect('mongodb+srv://projet_livre:LivreProjet02445@cluster0.vmaby4x.m
 
 
   const app = express();
+
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -31,7 +32,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 
-app.use('/api/stuff', stuffRoutes);
+app.use('/api/books', stuffRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

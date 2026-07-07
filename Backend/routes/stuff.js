@@ -10,25 +10,25 @@ const stuffCtrl = require ('../controllers/stuff')
 
 
 // app.post permet de poster un objet dans la base de donnée.
-// save enregistreun Thing
-router.post('/', auth, multer, stuffCtrl.createThing);
+// save enregistreun Book
+router.post('/', auth, multer, stuffCtrl.createBook);
 
 // put permet une modification 
 // updateOne permet de update un élément 
-router.put('/:id', auth, multer, stuffCtrl.modifyThing);
+router.put('/:id', auth, multer, stuffCtrl.modifyBook);
 
 
 // delete permet de supprimer 
 // deleteOne permet de supprimer un élément 
-router.delete('/:id', auth, multer, stuffCtrl.deleteThing);
+router.delete('/:id', auth, multer, stuffCtrl.deleteBook);
 
 //app.get permet de recevoir une information
-// findOne retourne seulement un seul Thing basé sur son id
-router.get('/:id', auth, stuffCtrl.getOneThing);
+// findOne retourne seulement un seul Book basé sur son id
+router.get('/:id', stuffCtrl.getOneBook);
 
 
-//find retourne tous les Things
-router.get('/', auth, stuffCtrl.getAllThings);
+//find retourne tous les Books
+router.get('/', stuffCtrl.getAllBooks);
 
 
 module.exports = router;
