@@ -1,6 +1,7 @@
 const express = require('express');
-const bodyParser = require('body-parser')
-const dns = require('node:dns/promises') // Détournement pour pouvoir se connecter
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
+const dns = require('node:dns/promises'); // Détournement pour pouvoir se connecter
 dns.setServers(["1.1.1.1", "1.0.0.1"]);
 
 const mongoose = require('mongoose');
@@ -12,14 +13,15 @@ const userRoutes = require('./routes/user');
 
 
 mongoose.connect('mongodb+srv://projet_livre:LivreProjet02445@cluster0.vmaby4x.mongodb.net/?appName=Cluster0')
-    // ({ useNewUrlParser: true,
-    // useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch((error) => console.log('Connexion à MongoDB échouée !', error));
 
 
   const app = express();
 
+app.use(helmet({
+crossOriginResourcePolicy: { policy: 'cross-origin' }  
+}));
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

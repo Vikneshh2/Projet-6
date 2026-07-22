@@ -1,4 +1,3 @@
-// ce fichier permet de détailler les différentes actions
 const Book = require('../models/Book');
 
 const fs = require('fs');
@@ -63,14 +62,111 @@ exports.deleteBook = (req, res, next) => {
        });
 };
 
-exports.getOneBook = (req, res, next) => {
-  Book.findOne({ _id: req.params.id })
-    .then(book => res.status(200).json(book))
-    .catch(error => res.status(404).json({ error }));
-}
+
 
 exports.getAllBooks = (req, res, next) => {
   Book.find()
-    .then(books => res.status(200).json(books))
+    .then(books => {
+      const booksArondis = books.map(function(book) {
+        book.averageRating = parseFloat(book.averageRating.toFixed(1));
+        return book;
+      });
+      res.status(200).json(booksArondis);
+    })
     .catch(error => res.status(400).json({ error }));
+};
+
+exports.getOneBook = (req, res, next) => {
+  Book.findOne({ _id: req.params.id })
+    .then(book => {
+      book.averageRating = parseFloat(book.averageRating.toFixed(1));
+      res.status(200).json(book);
+    })
+    .catch(error => res.status(404).json({ error }));
+};
+
+function ratingCompare(a, b) {
+  if (b.averageRating > a.averageRating) {
+    return 1
+  }
+  else if (b.averageRating < a.averageRating) {
+    return -1
+  }
+  else {
+    return 0 
+  }
 }
+
+exports.getBestRating = (req, res, next) => {
+  Book.find()
+    .then(books => {
+      let booksTries = books;
+    
+      booksTries.sort (ratingCompare);
+
+      let top3 = [];
+      for (let i = 0; i < 3; i++) {
+        if (booksTries[i]) {
+          top3.push(booksTries[i]);
+        }
+      }
+      
+      res.status(200).json(top3);
+    })
+    .catch(function(error) {
+      res.status(400).json({ error: error });
+    });
+};
+
+
+
+exports.rateBook = (req, res, next) => {
+  let noteUtilisateur = req.body.rating;
+  
+
+  if (noteUtilisateur < 0) {
+    return res.status(400).json({ message: 'La note ne peut pas être négative' });
+  }
+  if (noteUtilisateur > 5) {
+    return res.status(400).json({ message: 'La note ne peut pas dépasser 5' });
+  }
+
+  Book.findOne({ _id: req.params.id })
+    .then(function(book) {
+      
+      let dejaNote = false;
+      for (let i = 0; i < book.ratings.length; i++) {
+        if (book.ratings[i].userId === req.auth.userId) {
+          dejaNote = true;
+          break
+        }
+      }
+      
+      if (dejaNote === true) {
+        return res.status(400).json({ message: 'Vous avez déjà noté ce livre !' });
+      }
+
+      let nouvelleNote = {
+        userId: req.auth.userId,
+        grade: noteUtilisateur
+      };
+      book.ratings.push(nouvelleNote);
+
+      let total = 0;
+      for (let i = 0; i < book.ratings.length; i++) {
+        total = total + book.ratings[i].grade;
+      }
+      book.averageRating = parseFloat((total / book.ratings.length).toFixed(1));
+
+      book.save()
+        .then(function(bookMisAJour) {
+          res.status(200).json(bookMisAJour);
+        })
+        .catch(function(error) {
+          res.status(400).json({ error: error });
+        });
+    })
+    .catch(function(error) {
+      res.status(404).json({ error: error });
+    });
+};

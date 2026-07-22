@@ -1,8 +1,3 @@
-//ce fichier permet de gérer la création d'un user
-// avec bcrypt, on peut hash le mot de pass, cad de crypter le mdp et l'enregistrer de manière sécuriser
-// salt nb de tour, plus le nb de tours est élevé plus la fonction sera longue 
-// compare de bcpryt permet de comparer un le mdp entré avec le mdp de dans la base donneé
-
 const bcrypt = require ('bcrypt');
 const jwt = require ('jsonwebtoken')
 const User = require ('../models/User');

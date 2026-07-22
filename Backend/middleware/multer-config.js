@@ -1,7 +1,3 @@
-//multer sert à la gestion des fichiers
-// disk sorage permet de configurer le nom des fichiers entrants
-// single est un middleware qui capture et enregistre les fichier grace à une configuration
-
 const multer = require('multer');
 
 const MIME_TYPES = {
