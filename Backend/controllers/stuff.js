@@ -4,6 +4,12 @@ const fs = require('fs');
 
 
 exports.createBook = (req, res, next) => {
+    if (!req.file) {
+    return res.status(400).json({ message: 'Image requise !' });
+  }
+    if (!req.body.book) {
+    return res.status(400).json({ message: 'Données du livre manquantes !' });
+  }
    const bookObject = JSON.parse(req.body.book);
    delete bookObject._id;
    delete bookObject._userId;
@@ -140,6 +146,9 @@ exports.rateBook = (req, res, next) => {
           dejaNote = true;
           break
         }
+      }
+        if (!book) {
+        return res.status(404).json({ message: 'Livre non trouvé' });
       }
       
       if (dejaNote === true) {

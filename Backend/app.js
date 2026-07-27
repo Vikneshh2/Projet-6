@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
@@ -12,7 +13,7 @@ const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 
 
-mongoose.connect('mongodb+srv://projet_livre:LivreProjet02445@cluster0.vmaby4x.mongodb.net/?appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch((error) => console.log('Connexion à MongoDB échouée !', error));
 
